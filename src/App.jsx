@@ -45,16 +45,18 @@ function App() {
   };
 
   const fetchArticle = async () => {
+
     if (!url) return "";
 
     try {
 
-      const proxy = "https://api.allorigins.win/raw?url=";
+      const proxy = "https://api.allorigins.win/get?url=";
+
       const res = await fetch(proxy + encodeURIComponent(url));
 
-      if (!res.ok) throw new Error("Fetch failed");
+      const data = await res.json();
 
-      const html = await res.text();
+      const html = data.contents;
 
       const doc = new DOMParser().parseFromString(html, "text/html");
 
@@ -62,16 +64,15 @@ function App() {
 
       const article = paragraphs.map(p => p.innerText).join(" ");
 
-      if (!article.trim()) throw new Error("No article text");
-
       return article;
 
-    } catch (err) {
+    } catch {
 
       alert("Failed to extract article text. Try pasting the article manually.");
       return "";
 
     }
+
   };
 
   const handleSummarize = async () => {
