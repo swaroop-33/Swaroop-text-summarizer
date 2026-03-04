@@ -45,14 +45,14 @@ function App() {
   };
 
   const fetchArticle = async () => {
-
-    if (!url) return;
+    if (!url) return "";
 
     try {
 
       const proxy = "https://api.allorigins.win/raw?url=";
-
       const res = await fetch(proxy + encodeURIComponent(url));
+
+      if (!res.ok) throw new Error("Fetch failed");
 
       const html = await res.text();
 
@@ -62,41 +62,57 @@ function App() {
 
       const article = paragraphs.map(p => p.innerText).join(" ");
 
-      setText(article);
+      if (!article.trim()) throw new Error("No article text");
 
-    } catch {
+      return article;
 
-      alert("Failed to extract article text");
+    } catch (err) {
+
+      alert("Failed to extract article text. Try pasting the article manually.");
+      return "";
 
     }
-
   };
 
   const handleSummarize = async () => {
 
+    let workingText = text;
+
     if (url && !text) {
-      await fetchArticle();
+
+      const article = await fetchArticle();
+
+      if (!article) return;
+
+      setText(article);
+      workingText = article;
+
     }
 
-    if (!text.trim()) return;
+    if (!workingText.trim()) return;
 
     let result;
 
     if (algorithm === "textrank") {
-      result = textRankSummarize(text, ratio);
+      result = textRankSummarize(workingText, ratio);
     } else {
-      result = frequencySummarize(text, ratio);
+      result = frequencySummarize(workingText, ratio);
     }
 
     if (mode === "bullet") {
+
       const sentences = result.match(/[^.!?]+[.!?]+/g) || [];
+
       result = sentences.map(s => "• " + s.trim()).join("\n");
+
     }
 
     setSummary(result);
 
-    const kw = extractKeywords(text, 5);
+    const kw = extractKeywords(workingText, 5);
+
     setKeywords(kw);
+
   };
 
   const clearAll = () => {
