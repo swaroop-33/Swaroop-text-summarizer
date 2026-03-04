@@ -1,8 +1,13 @@
-export function frequencySummarize(text, ratio = 0.3) {
+export function frequencySummarize(text, mode = "medium") {
 
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
 
-    if (sentences.length < 2) return text;
+    if (sentences.length < 2) {
+        return {
+            summary: text,
+            indexes: [0]
+        };
+    }
 
     const stopwords = new Set([
         "the", "is", "in", "at", "of", "a", "and", "to", "it", "for", "on", "that", "this",
@@ -27,6 +32,7 @@ export function frequencySummarize(text, ratio = 0.3) {
         freq[word] = freq[word] / maxFreq;
     });
 
+
     const scores = sentences.map((sentence, index) => {
 
         const sentenceWords = sentence
@@ -44,7 +50,11 @@ export function frequencySummarize(text, ratio = 0.3) {
             }
         });
 
-        const normalizedScore = count > 0 ? score / count : 0;
+        let normalizedScore = count > 0 ? score / count : 0;
+
+        // position boost
+        if (index === 0) normalizedScore += 0.2;
+        if (index === sentences.length - 1) normalizedScore += 0.1;
 
         return {
             sentence,
@@ -54,13 +64,45 @@ export function frequencySummarize(text, ratio = 0.3) {
 
     });
 
+
     scores.sort((a, b) => b.score - a.score);
 
-    const summaryLength = Math.max(1, Math.floor(sentences.length * ratio));
+    const total = sentences.length;
+
+    let summaryLength;
+
+    if (total <= 5) {
+
+        if (mode === "short") summaryLength = 1;
+        else if (mode === "medium") summaryLength = 2;
+        else summaryLength = 3;
+
+    } else {
+
+        const config = {
+            short: { ratio: 0.15, min: 1, max: 3 },
+            medium: { ratio: 0.30, min: 3, max: 6 },
+            detailed: { ratio: 0.55, min: 5, max: 12 }
+        };
+
+        const { ratio, min, max } = config[mode];
+
+        const target = Math.round(total * ratio);
+
+        summaryLength = Math.max(min, Math.min(target, max));
+    }
+
 
     const selected = scores.slice(0, summaryLength);
 
+    const indexes = selected.map(s => s.index);
+
     selected.sort((a, b) => a.index - b.index);
 
-    return selected.map(s => s.sentence).join(" ");
+    const summary = selected.map(s => s.sentence).join(" ");
+
+    return {
+        summary,
+        indexes
+    };
 }
