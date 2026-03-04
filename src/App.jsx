@@ -43,6 +43,7 @@ function App() {
     navigator.clipboard.writeText(summary);
     alert("Summary copied!");
   };
+
   const fetchArticle = async () => {
 
     if (!url) return;
@@ -70,6 +71,7 @@ function App() {
     }
 
   };
+
   const handleSummarize = async () => {
 
     if (url && !text) {
@@ -97,198 +99,180 @@ function App() {
     setKeywords(kw);
   };
 
-  let result;
+  const clearAll = () => {
+    setText("");
+    setSummary("");
+    setKeywords([]);
+    setUrl("");
+  };
 
-  if (algorithm === "textrank") {
-    result = textRankSummarize(text, ratio);
-  } else {
-    result = frequencySummarize(text, ratio);
-  }
+  return (
 
-  if (mode === "bullet") {
-    const sentences = result.match(/[^.!?]+[.!?]+/g) || [];
-    result = sentences.map(s => "• " + s.trim()).join("\n");
-  }
+    <div className="min-h-screen bg-black text-white flex justify-center">
 
-  setSummary(result);
+      <div className="w-full max-w-6xl p-10">
 
-  const kw = extractKeywords(text, 5);
-  setKeywords(kw);
-};
+        <h1 className="text-4xl font-bold mb-2">
+          Swaroop's Text Summarizer
+        </h1>
 
-const clearAll = () => {
-  setText("");
-  setSummary("");
-  setKeywords([]);
-};
+        <p className="text-gray-400 mb-8">
+          AI-powered text summarization using Frequency and TextRank algorithms
+        </p>
 
-return (
+        <input
+          type="text"
+          placeholder="Paste article URL (optional)"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className="w-full p-3 mb-4 text-black rounded"
+        />
 
-  <div className="min-h-screen bg-black text-white flex justify-center">
+        <textarea
+          className="w-full h-40 p-4 text-black rounded"
+          placeholder="Paste your text here..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
 
-    <div className="w-full max-w-6xl p-10">
+        <div className="grid grid-cols-4 gap-4 mt-6 text-center">
 
-      <h1 className="text-4xl font-bold mb-2">
-        Swaroop's Text Summarizer
-      </h1>
+          <div className="bg-gray-900 p-4 rounded">
+            <p className="text-sm text-gray-400">Words</p>
+            <p className="text-xl">{wordCount}</p>
+          </div>
 
-      <p className="text-gray-400 mb-8">
-        AI-powered text summarization using Frequency and TextRank algorithms
-      </p>
-      <input
-        type="text"
-        placeholder="Paste article URL (optional)"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        className="w-full p-3 mb-4 text-black rounded"
-      />
-      <textarea
-        className="w-full h-40 p-4 text-black rounded"
-        placeholder="Paste your text here..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+          <div className="bg-gray-900 p-4 rounded">
+            <p className="text-sm text-gray-400">Sentences</p>
+            <p className="text-xl">{sentenceCount}</p>
+          </div>
 
-      <div className="grid grid-cols-4 gap-4 mt-6 text-center">
+          <div className="bg-gray-900 p-4 rounded">
+            <p className="text-sm text-gray-400">Reading Time</p>
+            <p className="text-xl">{readingTime} min</p>
+          </div>
 
-        <div className="bg-gray-900 p-4 rounded">
-          <p className="text-sm text-gray-400">Words</p>
-          <p className="text-xl">{wordCount}</p>
+          <div className="bg-gray-900 p-4 rounded">
+            <p className="text-sm text-gray-400">Compression</p>
+            <p className="text-xl">{compression}%</p>
+          </div>
+
         </div>
 
-        <div className="bg-gray-900 p-4 rounded">
-          <p className="text-sm text-gray-400">Sentences</p>
-          <p className="text-xl">{sentenceCount}</p>
-        </div>
+        <div className="flex gap-6 mt-6">
 
-        <div className="bg-gray-900 p-4 rounded">
-          <p className="text-sm text-gray-400">Reading Time</p>
-          <p className="text-xl">{readingTime} min</p>
-        </div>
-
-        <div className="bg-gray-900 p-4 rounded">
-          <p className="text-sm text-gray-400">Compression</p>
-          <p className="text-xl">{compression}%</p>
-        </div>
-
-      </div>
-
-      <div className="flex gap-6 mt-6">
-
-        <div>
-          <label className="block mb-1">Algorithm</label>
-          <select
-            className="p-2 text-black rounded"
-            value={algorithm}
-            onChange={(e) => setAlgorithm(e.target.value)}
-          >
-            <option value="frequency">Frequency</option>
-            <option value="textrank">TextRank</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block mb-1">Summary Length</label>
-          <select
-            className="p-2 text-black rounded"
-            value={length}
-            onChange={(e) => setLength(e.target.value)}
-          >
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="detailed">Detailed</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block mb-1">Output Mode</label>
-          <select
-            className="p-2 text-black rounded"
-            value={mode}
-            onChange={(e) => setMode(e.target.value)}
-          >
-            <option value="paragraph">Paragraph</option>
-            <option value="bullet">Bullet Points</option>
-          </select>
-        </div>
-
-      </div>
-
-      <div className="mt-6 flex gap-4">
-
-        <button
-          onClick={handleSummarize}
-          className="px-6 py-2 bg-blue-500 rounded hover:bg-blue-600"
-        >
-          Summarize
-        </button>
-
-        <button
-          onClick={clearAll}
-          className="px-6 py-2 bg-gray-700 rounded hover:bg-gray-600"
-        >
-          Clear
-        </button>
-
-      </div>
-
-      {summary && (
-
-        <div className="mt-8 bg-gray-900 p-4 rounded">
-
-          <div className="flex justify-between items-center mb-2">
-
-            <h2 className="text-xl">Summary</h2>
-
-            <button
-              onClick={copySummary}
-              className="text-sm bg-blue-600 px-3 py-1 rounded"
+          <div>
+            <label className="block mb-1">Algorithm</label>
+            <select
+              className="p-2 text-black rounded"
+              value={algorithm}
+              onChange={(e) => setAlgorithm(e.target.value)}
             >
-              Copy
-            </button>
-
+              <option value="frequency">Frequency</option>
+              <option value="textrank">TextRank</option>
+            </select>
           </div>
 
-          <pre className="whitespace-pre-wrap">{summary}</pre>
+          <div>
+            <label className="block mb-1">Summary Length</label>
+            <select
+              className="p-2 text-black rounded"
+              value={length}
+              onChange={(e) => setLength(e.target.value)}
+            >
+              <option value="short">Short</option>
+              <option value="medium">Medium</option>
+              <option value="detailed">Detailed</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-1">Output Mode</label>
+            <select
+              className="p-2 text-black rounded"
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+            >
+              <option value="paragraph">Paragraph</option>
+              <option value="bullet">Bullet Points</option>
+            </select>
+          </div>
 
         </div>
 
-      )}
+        <div className="mt-6 flex gap-4">
 
-      {keywords.length > 0 && (
+          <button
+            onClick={handleSummarize}
+            className="px-6 py-2 bg-blue-500 rounded hover:bg-blue-600"
+          >
+            Summarize
+          </button>
 
-        <div className="mt-6">
+          <button
+            onClick={clearAll}
+            className="px-6 py-2 bg-gray-700 rounded hover:bg-gray-600"
+          >
+            Clear
+          </button>
 
-          <h2 className="text-xl mb-2">Keywords</h2>
+        </div>
 
-          <div className="flex flex-wrap gap-2">
+        {summary && (
 
-            {keywords.map((k, i) => (
-              <span
-                key={i}
-                className="bg-blue-600 px-3 py-1 rounded text-sm"
+          <div className="mt-8 bg-gray-900 p-4 rounded">
+
+            <div className="flex justify-between items-center mb-2">
+
+              <h2 className="text-xl">Summary</h2>
+
+              <button
+                onClick={copySummary}
+                className="text-sm bg-blue-600 px-3 py-1 rounded"
               >
-                {k}
-              </span>
-            ))}
+                Copy
+              </button>
+
+            </div>
+
+            <pre className="whitespace-pre-wrap">{summary}</pre>
 
           </div>
 
-        </div>
+        )}
 
-      )}
+        {keywords.length > 0 && (
 
-      <footer className="text-center mt-16 text-gray-500">
+          <div className="mt-6">
 
-        Built by Swaroop • React + Vite + Tailwind • NLP Algorithms
+            <h2 className="text-xl mb-2">Keywords</h2>
 
-      </footer>
+            <div className="flex flex-wrap gap-2">
+
+              {keywords.map((k, i) => (
+                <span
+                  key={i}
+                  className="bg-blue-600 px-3 py-1 rounded text-sm"
+                >
+                  {k}
+                </span>
+              ))}
+
+            </div>
+
+          </div>
+
+        )}
+
+        <footer className="text-center mt-16 text-gray-500">
+          Built by Swaroop • React + Vite + Tailwind • NLP Algorithms
+        </footer>
+
+      </div>
 
     </div>
 
-  </div>
-
-);
+  );
 }
 
 export default App;
