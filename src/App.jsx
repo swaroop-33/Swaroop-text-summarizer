@@ -8,6 +8,11 @@ function App() {
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
   const [keywords, setKeywords] = useState([]);
+  const copySummary = () => {
+    if (!summary) return;
+    navigator.clipboard.writeText(summary);
+    alert("Summary copied!");
+  };
   const [algorithm, setAlgorithm] = useState("frequency");
   const [length, setLength] = useState("medium");
   const [mode, setMode] = useState("paragraph");
@@ -144,16 +149,42 @@ function App() {
 
       </div>
 
-      <button
-        onClick={handleSummarize}
-        className="mt-6 px-6 py-2 bg-blue-500 rounded hover:bg-blue-600"
-      >
-        Summarize
-      </button>
+      <div className="mt-6 flex gap-4">
+
+        <button
+          onClick={handleSummarize}
+          className="px-6 py-2 bg-blue-500 rounded hover:bg-blue-600"
+        >
+          Summarize
+        </button>
+
+        <button
+          onClick={() => {
+            setText("")
+            setSummary("")
+            setKeywords([])
+          }}
+          className="px-6 py-2 bg-gray-700 rounded hover:bg-gray-600"
+        >
+          Clear
+        </button>
+
+      </div>
 
       {summary && (
         <div className="mt-8 bg-gray-900 p-4 rounded">
-          <h2 className="text-xl mb-2">Summary</h2>
+          <div className="flex justify-between items-center mb-2">
+
+            <h2 className="text-xl">Summary</h2>
+
+            <button
+              onClick={copySummary}
+              className="text-sm bg-blue-600 px-3 py-1 rounded"
+            >
+              Copy
+            </button>
+
+          </div>
           <pre className="whitespace-pre-wrap">{summary}</pre>
         </div>
       )}
