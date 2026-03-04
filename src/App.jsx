@@ -64,9 +64,13 @@ function App() {
 
     <div className="min-h-screen bg-black text-white p-10">
 
-      <h1 className="text-4xl font-bold mb-8">
+      <h1 className="text-4xl font-bold mb-2">
         Swaroop's Text Summarizer
       </h1>
+
+      <p className="text-gray-400 mb-8">
+        AI-powered text summarization using Frequency and TextRank algorithms
+      </p>
 
       <textarea
         className="w-full h-40 p-4 text-black rounded"
