@@ -59,3 +59,19 @@ Deployment:
 
 
 <img width="699" height="911" alt="image" src="https://github.com/user-attachments/assets/67fe8db1-f502-4c31-a44f-8e76256d988c" />
+
+
+## Live Demo
+
+https://swaroop-text-summarizer.vercel.app/
+
+
+## Future Improvements
+
+* Transformer-based summarization models
+* BERT/T5 integration
+* Multi-document summarization
+* PDF document summarization
+* AI-assisted semantic summarization
+* Summary evaluation metrics
+* User authentication and history tracking
