@@ -60,6 +60,16 @@ Deployment:
 
 <img width="699" height="911" alt="image" src="https://github.com/user-attachments/assets/67fe8db1-f502-4c31-a44f-8e76256d988c" />
 
+nlp-text-summarization-system/
+│
+├── screenshots/
+├── assets/
+├── app/
+├── preprocessing/
+├── requirements.txt
+├── README.md
+└── main.py
+
 
 ## Live Demo
 
