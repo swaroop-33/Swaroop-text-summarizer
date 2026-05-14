@@ -54,11 +54,8 @@ Deployment:
 
 * Vercel
 
-  
+#COMPARING ALGORITHMS  
 <img width="847" height="950" alt="Screenshot 2026-05-14 110725" src="https://github.com/user-attachments/assets/d0d8942d-d574-48c0-ad7a-93fe2b9dc080" />
 
-
-<img width="882" height="957" alt="Screenshot 2026-05-14 110743" src="https://github.com/user-attachments/assets/a8b4ed28-be83-4a4e-9242-64381184a738" />
-
-
+#SUMMARIZE OUTPUT
 <img width="699" height="911" alt="image" src="https://github.com/user-attachments/assets/67fe8db1-f502-4c31-a44f-8e76256d988c" />
